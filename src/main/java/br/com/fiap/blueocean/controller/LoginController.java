@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("login")
 @Tag(name = "Login", description = "API de login do usuário")
 public class LoginController {
     
@@ -99,7 +99,8 @@ public class LoginController {
         validarLogin(id);
         login.setId(id);
         return repository.save(login);
-    }    
+    } 
+    //Metodo para validar o login   
     private void validarLogin(Long id) {
         repository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND,"Login não encontrado"));
     }

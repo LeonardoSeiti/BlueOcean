@@ -11,7 +11,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "T_CORAL")
+@Table(name = "t_coral")
 public class Coral {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

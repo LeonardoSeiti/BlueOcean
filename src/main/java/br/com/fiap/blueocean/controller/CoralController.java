@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,15 +28,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/CadastrarCoral")
+@RequestMapping("CadastrarCoral")
 @Tag(name = "Coral", description = "API de cadastro de corais para análise de qualidade da água do mar")
 public class CoralController {
-
+    @Autowired
     CoralRepository repository;
 
     @Autowired
     PagedResourcesAssembler<Coral> pageAssembler;
-
+    // Metodo para listar todos os corais
     @GetMapping("/{all}")
     @Operation(summary = "Lista todos os corais cadastrados")
     @ApiResponse(responseCode = "200", description = "Lista de corais")
@@ -44,7 +45,7 @@ public class CoralController {
     public List<Coral> findAll(@PathVariable String all) {
         return repository.findAll();
     }
-
+    //Metodo para listar os corais com paginação
     @Operation(summary = "Lista os corais com paginação")
     @ApiResponse(responseCode = "200", description = "Lista de corais")
     @ApiResponse(responseCode = "500", description = "Erro interno")
@@ -58,10 +59,10 @@ public class CoralController {
                 Page<Coral> page = null;
                 if (page == null) {
                     page = repository.findAll(pageable);
-                }
-                return pageAssembler.toModel(page);
+            }
+            return pageAssembler.toModel(page);
     }
-
+    //Metodo para salvar um novo coral
     @Operation(summary = "Cadastra um novo coral")
     @ApiResponse(responseCode = "201", description = "Coral salvo com sucesso")
     @ApiResponse(responseCode = "500", description = "Erro interno")
@@ -70,7 +71,7 @@ public class CoralController {
     public Coral salvar(@RequestBody Coral coral) {
         return repository.save(coral);
     }
-
+    //Metodo para apagar um coral
     @DeleteMapping("/{id}")
     @Operation(summary = "Apaga um cadastro de coral")
     @ApiResponse(responseCode = "200", description = "Coral apagado com sucesso")
@@ -80,13 +81,19 @@ public class CoralController {
         validarCoral(id);
         repository.deleteById(id);
     }
+    //Metodo para atualizar um coral
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualiza um cadastro de coral")
+    @ApiResponse(responseCode = "200", description = "Coral atualizado com sucesso")
+    @ApiResponse(responseCode = "500", description = "Erro interno")
+    @ApiResponse(responseCode = "404", description = "Coral não encontrado")
 
     public Coral atualizar(@PathVariable Long id, @RequestBody Coral coral) {
         validarCoral(id);
         coral.setId(id);
         return repository.save(coral);
     }
-
+    //Metodo para validar o coral
     private void validarCoral(Long id){
         repository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Coral não encontrado"));
     }

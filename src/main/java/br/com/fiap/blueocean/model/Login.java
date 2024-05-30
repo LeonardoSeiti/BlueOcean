@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 @Entity
 @Data
-@Table(name = "T_CADASTRO")
+@Table(name = "t_cadastro")
 public class Login {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
