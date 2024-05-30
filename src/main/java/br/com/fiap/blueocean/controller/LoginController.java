@@ -1,18 +1,19 @@
 package br.com.fiap.blueocean.controller;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
-import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +21,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import br.com.fiap.blueocean.model.Login;
 import br.com.fiap.blueocean.repository.LoginRepository;
@@ -77,6 +78,16 @@ public class LoginController {
     public Login salvar(@RequestBody Login login) {
         return repository.save(login);
     }
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Apaga o login")
+    @ApiResponse(responseCode = "200", description = "Login apagado")
+    @ApiResponse(responseCode = "500", description = "Erro interno")
+    @ApiResponse(responseCode = "400", description = "Erro de validação, insira o id correto")
+    public void apagar(@PathVariable Long id) {
+        validarLogin(id);
+        repository.deleteById(id);
+    }
+
     @PutMapping("/{id}")
     @Operation(summary = "Atualiza o login")
     @ApiResponse(responseCode = "200", description = "Login atualizado")

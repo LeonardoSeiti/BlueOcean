@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @Table(name = "T_CADASTRO")
 public class Login {
-    @Id@GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @NotBlank
     private String nome;
