@@ -29,7 +29,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("CadastrarCoral")
+@RequestMapping("coral")
 @Tag(name = "Coral", description = "API de cadastro de corais para análise de qualidade da água do mar")
 public class CoralController {
     @Autowired
