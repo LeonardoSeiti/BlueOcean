@@ -1,7 +1,6 @@
 package br.com.fiap.blueocean.controller;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +26,7 @@ import br.com.fiap.blueocean.repository.CoralRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("CadastrarCoral")
@@ -36,14 +37,16 @@ public class CoralController {
 
     @Autowired
     PagedResourcesAssembler<Coral> pageAssembler;
-    // Metodo para listar todos os corais
-    @GetMapping("/{all}")
+    // Metodo para listar os corais por id
+    @GetMapping("{id}")
     @Operation(summary = "Lista todos os corais cadastrados")
     @ApiResponse(responseCode = "200", description = "Lista de corais")
     @ApiResponse(responseCode = "500", description = "Erro interno")
     @ApiResponse(responseCode = "400", description = "Erro de validação")
-    public List<Coral> findAll(@PathVariable String all) {
-        return repository.findAll();
+    public EntityModel<Coral> mostra(@PathVariable Long id) {
+        var coral = repository.findById(id).orElseThrow(
+            () -> new ResponseStatusException(NOT_FOUND, "Coral não encontrado"));
+        return coral.toEntityModel();
     }
     //Metodo para listar os corais com paginação
     @Operation(summary = "Lista os corais com paginação")
@@ -68,8 +71,11 @@ public class CoralController {
     @ApiResponse(responseCode = "500", description = "Erro interno")
     @ApiResponse(responseCode = "400", description = "Erro de validação")
     @PostMapping
-    public Coral salvar(@RequestBody Coral coral) {
-        return repository.save(coral);
+    public ResponseEntity<EntityModel<Coral>> salvar(@RequestBody @Valid Coral coral) {
+        repository.save(coral);
+        return ResponseEntity
+        .created(coral.toEntityModel().getRequiredLink("self").toUri())
+        .body(coral.toEntityModel());
     }
     //Metodo para apagar um coral
     @DeleteMapping("/{id}")
@@ -77,9 +83,13 @@ public class CoralController {
     @ApiResponse(responseCode = "200", description = "Coral apagado com sucesso")
     @ApiResponse(responseCode = "500", description = "Erro interno")
     @ApiResponse(responseCode = "404", description = "Coral não encontrado")
-    public void apagar(@PathVariable Long id) {
-        validarCoral(id);
+    public ResponseEntity<Coral> apagar (@PathVariable Long id) {
+        repository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Coral não encontrado"));
+
         repository.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+        
     }
     //Metodo para atualizar um coral
     @PutMapping("/{id}")
@@ -88,10 +98,11 @@ public class CoralController {
     @ApiResponse(responseCode = "500", description = "Erro interno")
     @ApiResponse(responseCode = "404", description = "Coral não encontrado")
 
-    public Coral atualizar(@PathVariable Long id, @RequestBody Coral coral) {
+    public ResponseEntity<Coral> atualizar(@PathVariable Long id, @RequestBody Coral coral) {
         validarCoral(id);
         coral.setId(id);
-        return repository.save(coral);
+        repository.save(coral);
+        return ResponseEntity.ok(coral);
     }
     //Metodo para validar o coral
     private void validarCoral(Long id){

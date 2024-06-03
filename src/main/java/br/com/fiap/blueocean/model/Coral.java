@@ -1,5 +1,9 @@
 package br.com.fiap.blueocean.model;
 
+import org.springframework.hateoas.EntityModel;
+import br.com.fiap.blueocean.controller.CoralController;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,7 +16,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "t_coral")
-public class Coral {
+public class Coral extends EntityModel<Coral>{
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     //Tipos de corais são: 
@@ -22,4 +26,14 @@ public class Coral {
     private String tipo;
     @NotBlank(message = "{coral.cor.notblank}")
     private String cor;
+
+    public EntityModel<Coral> toEntityModel() {
+        return EntityModel.of(
+        this,
+
+        linkTo(methodOn(CoralController.class).mostra(id)).withSelfRel(),
+        linkTo(methodOn(CoralController.class).apagar(id)).withRel("apagar"),
+        linkTo(methodOn(CoralController.class).atualizar(id, this)).withRel("atualizar"),
+        linkTo(methodOn(CoralController.class).index(null, null, null)).withRel("corais"));
+    }
 }
