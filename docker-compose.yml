@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    image: leoseiti/global-solution-java:latest
+    ports:
+      - "8080:8080"
+    env_file:
+      - credenciais.env
+    depends_on:
+      - db
+    restart: always
+    volumes:
+      - app-data:/app/data
+
+  db:
+    image: oracleinanutshell/oracle-xe-11g
+    environment:
+      - ORACLE_ALLOW_REMOTE=true
+      - ORACLE_DISABLE_ASYNCH_IO=true
+      - ORACLE_ENABLE_XDB=true
+      - ORACLE_PASSWORD=senha
+    ports:
+      - "1521:1521"
+    restart: always
+    volumes:
+      - oracle-data:/u01/app/oracle/oradata
+
+
+volumes:
+  app-data:
+  oracle-data:
