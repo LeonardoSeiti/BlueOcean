@@ -27,7 +27,7 @@
 
 ## Documentação do projeto usando Swagger
 
-http://20.55.52.144:8080/swagger-ui/index.html#/docs
+[http://20.55.52.144:8080/swagger-ui/index.html#/docs](http://48.216.215.240:8080/swagger-ui/index.html#/docs)
 
 ## Link demonstração funcionamento do projeto
 
