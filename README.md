@@ -10,7 +10,7 @@ espécies de corais.
 
 - [Ezequiel Bispo de Jesus](https://github.com/EzequielBispo) - RM 99573 - Turma  2TDSPY
 
-- [Helena Cristina]() - RM 551873 - Turma  2TDSPY
+- [Helena Cristina](https://github.com/19helena) - RM 551873 - Turma  2TDSPY
 
 - [Kelvin Gomes](https://github.com/kelving0mes) - RM 98126 - Turma  2TDSPN 
 
